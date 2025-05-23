@@ -21,7 +21,7 @@ namespace Phonebook.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Contact", b =>
+            modelBuilder.Entity("Phonebook.Models.Contact", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -45,15 +45,17 @@ namespace Phonebook.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProfilePhotoPath")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Contacts");
                 });
 
-            modelBuilder.Entity("PhoneNumber", b =>
+            modelBuilder.Entity("Phonebook.Models.PhoneNumber", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -79,9 +81,41 @@ namespace Phonebook.Migrations
                     b.ToTable("PhoneNumbers");
                 });
 
-            modelBuilder.Entity("PhoneNumber", b =>
+            modelBuilder.Entity("Phonebook.Models.User", b =>
                 {
-                    b.HasOne("Contact", "Contact")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Phonebook.Models.Contact", b =>
+                {
+                    b.HasOne("Phonebook.Models.User", "User")
+                        .WithMany("Contacts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Phonebook.Models.PhoneNumber", b =>
+                {
+                    b.HasOne("Phonebook.Models.Contact", "Contact")
                         .WithMany("PhoneNumbers")
                         .HasForeignKey("ContactId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -90,9 +124,14 @@ namespace Phonebook.Migrations
                     b.Navigation("Contact");
                 });
 
-            modelBuilder.Entity("Contact", b =>
+            modelBuilder.Entity("Phonebook.Models.Contact", b =>
                 {
                     b.Navigation("PhoneNumbers");
+                });
+
+            modelBuilder.Entity("Phonebook.Models.User", b =>
+                {
+                    b.Navigation("Contacts");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,11 +1,16 @@
-public class Contact
+namespace Phonebook.Models
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public string Email { get; set; }
-    public string Address { get; set; }
-    public string Group { get; set; }
-    public string? ProfilePhotoPath { get; set; }
+    public class Contact
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string Address { get; set; }
+        public string Group { get; set; }
 
-    public ICollection<PhoneNumber> PhoneNumbers { get; set; }
+        public int UserId { get; set; }
+        public User User { get; set; }
+
+        public ICollection<PhoneNumber> PhoneNumbers { get; set; }
+    }
 }
